@@ -164,8 +164,12 @@ def extract_invoice_data(document: documentai.Document) -> Dict[str, Any]:
             extracted_data["addresses"]["billing_address"] = entity_value
 
     # Process tables (line items)
-    for page in document.pages:
-        for table in page.tables:
+    import logging
+    all_line_items = []
+
+    for page_idx, page in enumerate(document.pages):
+        logging.info(f"Processing page {page_idx+1} with {len(page.tables)} tables.")
+        for table_idx, table in enumerate(page.tables):
             headers = []
             rows = []
 
@@ -176,7 +180,6 @@ def extract_invoice_data(document: documentai.Document) -> Dict[str, Any]:
                     for cell in header_row.cells:
                         cell_text = ""
                         if cell.layout.text_anchor:
-                            # Extract text from text segments
                             for segment in cell.layout.text_anchor.text_segments:
                                 start_index = segment.start_index
                                 end_index = segment.end_index
@@ -184,33 +187,45 @@ def extract_invoice_data(document: documentai.Document) -> Dict[str, Any]:
                         header_cells.append(cell_text.strip())
                     headers = header_cells
                     break  # Use first header row
+            logging.info(f"Table {table_idx+1} headers: {headers}")
 
             # Extract data rows
-            for row in table.body_rows:
+            for row_idx, row in enumerate(table.body_rows):
                 row_data = {}
                 for i, cell in enumerate(row.cells):
                     cell_text = ""
                     if cell.layout.text_anchor:
-                        # Extract text from text segments
                         for segment in cell.layout.text_anchor.text_segments:
                             start_index = segment.start_index
                             end_index = segment.end_index
                             cell_text += document.text[start_index:end_index]
 
-                    # Map to header or use column index
                     if i < len(headers) and headers[i]:
                         row_data[headers[i]] = cell_text.strip()
                     else:
                         row_data[f"column_{i}"] = cell_text.strip()
 
-                # Only add non-empty rows
+                logging.info(f"Table {table_idx+1} row {row_idx+1}: {row_data}")
                 if any(value.strip() for value in row_data.values() if value):
                     rows.append(row_data)
 
-            # Add line items if we found any
+            logging.info(f"Table {table_idx+1}: Found {len(rows)} line item rows.")
             if rows:
-                extracted_data["line_items"] = rows
-                break  # Use first table with data
+                all_line_items.extend(rows)
+
+    if all_line_items:
+        extracted_data["line_items"] = all_line_items
+    else:
+        # Fallback: extract line items from entities if table extraction fails
+        line_item_entities = [e for e in document.entities if e.type_ == "line_item"]
+        logging.info(f"Fallback: Found {len(line_item_entities)} line_item entities.")
+        for entity in line_item_entities:
+            item = {
+                "description": getattr(entity, "mention_text", ""),
+                "confidence": getattr(entity, "confidence", None)
+            }
+            # Optionally, extract more fields if available (amount, quantity, etc.)
+            extracted_data["line_items"].append(item)
 
     return extracted_data, confidence_scores
 

@@ -16,8 +16,8 @@ class InvoiceProcessingInput(BaseModel):
 
 
 class InvoiceProcessingTool(BaseTool):
-    name = "process_invoice"
-    description = "Process uploaded invoice files using Google Document AI. Returns extracted vendor info, amounts, dates, and line items with confidence scores."
+    name: str = "process_invoice"
+    description: str = "Process uploaded invoice files using Google Document AI. Returns extracted vendor info, amounts, dates, and line items with confidence scores."
     args_schema: Type[BaseModel] = InvoiceProcessingInput
 
     def _run(self, file_path: str) -> str:
@@ -75,8 +75,8 @@ class InvoiceSearchInput(BaseModel):
 
 
 class InvoiceSearchTool(BaseTool):
-    name = "search_invoices"
-    description = "Search processed invoices by vendor name, amount range, or other criteria. Use natural language queries like 'invoices from Acme' or 'invoices over 1000 dollars'."
+    name: str = "search_invoices"
+    description: str = "Search processed invoices by vendor name, amount range, or other criteria. Use natural language queries like 'invoices from Acme' or 'invoices over 1000 dollars'."
     args_schema: Type[BaseModel] = InvoiceSearchInput
 
     def _run(self, query: str) -> str:
@@ -134,8 +134,8 @@ class InvoiceAnalyticsInput(BaseModel):
 
 
 class InvoiceAnalyticsTool(BaseTool):
-    name = "analyze_invoices"
-    description = "Analyze invoice data and provide insights like spending trends, top vendors, average amounts, etc."
+    name: str = "analyze_invoices"
+    description: str = "Analyze invoice data and provide insights like spending trends, top vendors, average amounts, etc."
     args_schema: Type[BaseModel] = InvoiceAnalyticsInput
 
     def _run(self, period: str = "this month") -> str:

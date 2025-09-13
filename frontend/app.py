@@ -459,14 +459,7 @@ def main():
     st.header("📈 Processing History & Analytics")
     display_processing_history()
 
-    # Footer
-    st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; color: #666;">
-        <p>🚀 <strong>Invoice Processing AI</strong> - Powered by Google Document AI</p>
-        <p>Built with FastAPI + Streamlit | Production Ready</p>
-    </div>
-    """, unsafe_allow_html=True)
+    
 
 
 # Additional utility functions
