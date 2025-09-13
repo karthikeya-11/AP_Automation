@@ -101,20 +101,6 @@ invoice-processing-ai/
 └── README.md                      # This file
 ```
 
-## 🎯 **Use Cases**
-
-### **Enterprise Applications**
-- **Accounts Payable Automation** - Streamline invoice processing workflows
-- **Financial Data Entry** - Eliminate manual data entry errors
-- **Audit & Compliance** - Maintain accurate financial records
-- **ERP Integration** - Feed structured data into enterprise systems
-
-### **Business Benefits**
-- **Cost Reduction** - Reduce processing costs by 90%
-- **Time Savings** - Process invoices in seconds, not minutes
-- **Accuracy Improvement** - Eliminate human data entry errors
-- **Scalability** - Handle volume spikes without additional staff
-- **Compliance** - Standardized data extraction and audit trails
 
 ## 🔧 **Configuration**
 
